@@ -1,0 +1,25 @@
+{
+  "name": "kas-cleanup-grid",
+  "version": "1.0.0",
+  "description": "A trash pick up grid tracking web app.",
+  "main": "server.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kaliatech/kas-cleanup-grid.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kaliatech/kas-cleanup-grid/issues"
+  },
+  "homepage": "https://github.com/kaliatech/kas-cleanup-grid#readme"
+}

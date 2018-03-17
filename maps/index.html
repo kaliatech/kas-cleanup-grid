@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link rel="stylesheet" href="../static/css/global.css">
+
+    <title>Cleanup Grid</title>
+
+    <style>
+    </style>
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Cleanup Grid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/maps">Maps</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="about.html">About</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <button class="btn btn-outline-success my-2 my-sm-0">Login</button>
+            </form>
+        </div>
+    </nav>
+
+    <main role="main" class="container-fluid maps">
+
+        <div id="map-cont">
+            <div id="map" style="border: 1px solid black"></div>
+        </div>
+
+    </main>
+
+    <!--<footer class="container-fluid">-->
+    <!--  &copy; 2018-->
+    <!--</footer>-->
+
+    <!-- JavaScript for bootstrap -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
+
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>-->
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>-->
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-database.js"></script>-->
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-firestore.js"></script>-->
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-messaging.js"></script>-->
+    <!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-storage.js"></script>-->
+
+    <script src="../static/javascript/Notifier.js"></script>
+    <script src="../static/javascript/FirebaseService.js"></script>
+    <script src="../static/javascript/MapsPage.js"></script>
+
+    <script>
+        /* global KAS */
+        /* global $ */
+        /* global firebase */
+        4
+
+
+        var globalNotifier = new KAS.Notifier()
+        var firebaseSrvc = new KAS.FirebaseService()
+
+        let pageCfg = {
+            $mapEl: $("#map")
+        };
+        var mapsPage = new KAS.MapsPage(pageCfg, globalNotifier, firebaseSrvc);
+
+        $(document).ready(function() {
+            mapsPage.init()
+        })
+
+        function initMap() {
+            mapsPage.initMap()
+        }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDO-egoe_ks3dE5sSAOmyP4CQir9pgFCag&callback=initMap"></script>
+</body>
+
+</html>

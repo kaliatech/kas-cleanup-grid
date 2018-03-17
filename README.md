@@ -1,2 +1,4 @@
 # kas-cleanup-grid
-A trash pick up grid tracking web app.
+Prototype code for drawing a grid over google maps, which each square being
+clickable and colorable. Intended as a starting point for an 8th grade school
+project.

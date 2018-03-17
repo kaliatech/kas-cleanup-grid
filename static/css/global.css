@@ -1,0 +1,70 @@
+.starter-template {
+  padding: 5rem 1.5rem;
+  text-align: center;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+#map-cont {
+  position: relative;
+  height: 100%;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+main.maps {
+  padding: 0;
+  height: 100%;
+}
+
+div.icon .material-icons,
+div.icon span {
+  vertical-align: middle;
+}
+
+.spin {
+     -webkit-transform-origin: 50% 50%;
+     transform-origin:50% 50%;
+     -ms-transform-origin:50% 50%; /* IE 9 */
+     -webkit-animation: spin .8s infinite linear;
+     -moz-animation: spin .8s infinite linear;
+     -o-animation: spin .8s infinite linear;
+     animation: spin .8s infinite linear;
+}
+@-moz-keyframes spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*i.material-icons {*/
+/*  vertical-align: text-bottom;*/
+/*  font-size: 16px;*/
+/*}*/
