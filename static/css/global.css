@@ -5,19 +5,39 @@
 
 html,
 body {
-  height: 100%;
+  height: 100vh;
+  padding-bottom:2em;
+}
+
+#authModal .modal-body {
+  min-height: 10em;
 }
 
 #map-cont {
-  position: relative;
-  height: 100%;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  bottom: 3.25em;
 }
 
 #map {
   position: absolute;
   top: 0;
-  bottom: 0;
+  bottom:0;
   width: 100%;
+}
+
+.auth-signedin, .auth-signedout {
+  display: none;
+}
+
+
+footer {
+  bottom: 0;
+  position: absolute;;
+  width: 100%;
+  height: 3.25em;
+  line-height: 3em; /* Vertically center the text */
 }
 
 main.maps {
