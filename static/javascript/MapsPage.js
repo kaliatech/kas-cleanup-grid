@@ -25,6 +25,9 @@
     this.currBounds = null;
     this.latGridLines = [];
     this.lonGridLines = [];
+
+
+    this.mapDataService = new KAS.MapDataService(notifier, firebaseSrvc, this.mapEl)
   }
 
   KAS.MapsPage.prototype.init = function() {}
@@ -102,48 +105,10 @@
 
     google.maps.event.addListener(this.map, 'click', (evt) => {
       //console.log('click', evt)
-      this.toggleSquare(evt.latLng.lat(), evt.latLng.lng())
+      this.mapDataService.onClick(evt.latLng.lat(), evt.latLng.lng())
     })
 
-  }
-
-  KAS.MapsPage.prototype.toggleSquare = function(lat, lon) {
-    console.log(lat, lon)
-
-    let topLat = Math.round((lat + (this.currentGridSize / 2)) / this.currentGridSize) * this.currentGridSize
-    var rightLon = Math.ceil(lon / this.currentGridSize) * this.currentGridSize;
-
-    var bottomLat = topLat - this.currentGridSize
-    var leftLon = rightLon - this.currentGridSize
-
-    let offset = this.currentGridSize * .075
-    new google.maps.Polygon({
-      paths: [
-        new google.maps.LatLng(topLat - offset, rightLon - offset),
-        new google.maps.LatLng(bottomLat + offset, rightLon - offset),
-        new google.maps.LatLng(bottomLat + offset, leftLon + offset),
-        new google.maps.LatLng(topLat - offset, leftLon + offset)
-      ],
-      clickable: false,
-      map: this.map,
-      geodesic: true,
-      fillColor: '#00FF00',
-      strokeColor: '#00FF00',
-      strokeOpacity: .5,
-      strokeWeight: 2
-    })
-
-    this.firebaseSrvc.db.collection("tile-clicks").add({
-        lat: lat,
-        lon: lon,
-      })
-      .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
-      });
-
+    this.mapDataService.init(this.map, this.currentGridSize, this.defaultLat, this.defaultLon);
   }
 
   KAS.MapsPage.prototype.drawGridLines = function() {
