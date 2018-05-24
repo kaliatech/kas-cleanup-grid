@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.css" />    
+
+    <link rel="stylesheet" href="../static/css/global.css">
+
+    <title>About - Cleanup Grid</title>
+
+    <style>
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="#">Cleanup Grid</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="../">Home <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../maps">Maps</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="../about">About</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav auth-signedin">
+                <li class="nav-item" style="padding: 0 1em; color: rgba(255,255,255, 0.5)">
+                    <span class="auth-signedin-name"></span>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <div class='auth-checking text-white'>
+                    ...
+                </div>
+                <div class='auth-signedin text-white'>
+                    <button type="button" class="btn btn-outline-success my-2 my-sm-0 btn-signout" data-toggle="modal">Sign Out</button>
+                </div>
+                <div class='auth-signedout'>
+                    <button type="button" class="btn btn-outline-success my-2 my-sm-0 btn-signin" data-toggle="modal" data-target="#authModal">Sign In</button>
+                </div>        
+            </form>
+        </div>
+    </nav>
+
+    <main role="main" class="container">
+        <div class="starter-template" style="text-align: left;">
+            <h1 class="display-4">About Me</h1>
+            <p class="lead">About Myself and the Project</p>
+            <hr class="my-4">
+            <p>
+                This application was created as a Twenty Time Project. The idea for a Twenty Time Project originated in the company M3, and was later further 
+                developed by Google. The concept was to give workers of the company 20% of their work time to pursue their own personal interests. The Twenty 
+                Time Project has given us post-it notes, double sided tape, and all of the Google applications like Google Docs and Google Slides.
+                <br><br>
+                My name is Kergan Sanderson, and I was assigned to do a Twenty Time Project as part of my Eight Grade English Language Arts class. Given the option 
+                to do whatever I wanted, I decided that I wanted to make a difference in my community. Lately, I had noticed an abundace of litter in urban areas. I also
+                had been wanting to develop programming skills for a while, and thought about ways that I could combine those two interests. This website and the movement 
+                that it supports is my Twenty Time Project.
+                <br><br>
+                The website that I ended up creating was developed using parts of <a href="https://maps.google.com" target="_blank">Google Maps</a> and 
+                <a href="https://getbootstrap.com/" target="_blank">Bootstrap 4</a>, an open source program that other programers can use for pieces of their code. My website uses 
+                Google Maps to create a map of the areas of trash around the communities of the world. Using the application, a user can see areas where trash may need to be picked 
+                up, may need to be picked up soon, or areas that are clean and have no current litter.
+            </p>
+        </div>
+
+<div id="authModal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Sign In</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div id="firebaseui-auth-container"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+        
+    </main>
+    
+    <footer class="footer">
+      <div class="container-fluid text-center">
+        
+      </div>
+    </footer>    
+
+    <!--<footer class="container-fluid">-->
+    <!--  &copy; 2018-->
+    <!--</footer>-->
+
+    <!-- JavaScript for bootstrap -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+</body>
+
+</html>
+    
