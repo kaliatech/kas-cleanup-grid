@@ -1,0 +1,77 @@
+{% set menu = 'map' %}
+{% set containerClass = 'container-fluid maps' %}
+
+{% extends "_layout/master.twig" %}
+
+{% block title %}Map -{% endblock %}
+{% block content %}
+    <div id="map-cont">
+        <div id="map" style="border: 1px solid black"></div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+<footer>
+    <footer class="footer bg-dark">
+        <div class="container-fluid text-center">
+            <!--<span class="text-white">Place sticky footer content here.</span>-->
+            <button type="button" class="btn btn-outline-success clean-btn">Clean</button>
+            <button type="button" class="btn btn-outline-danger trash-btn">Trash</button>
+            <button type="button" class="btn btn-outline-light clear-btn">Clear</button>
+            <!--<button type="button" class="btn btn-outline-light undo-btn">Undo</button>-->
+            <!--<button type="button" class="btn btn-outline-warning yellow-btn">Yellow</button>-->
+        </div>
+    </footer>
+</footer>
+{% endblock %}
+
+{% block js %}
+    <script src="../static/javascript/MapDataService.js"></script>
+    <script src="../static/javascript/MapsPage.js"></script>
+
+    <script>
+    /* global KAS */
+    /* global $ */
+    /* global firebase */
+    /* global firebaseio */
+
+    let BASE_URL = window.location.href
+    //let BASE_URL = 'https://kaliatech.github.io/kas-cleanup-grid'
+    //let BASE_URL = 'http://184.73.124.201:8080'
+
+    let globalNotifier = new KAS.Notifier()
+    let firebaseSrvc = new KAS.FirebaseService()
+    let firebaseAuth = new KAS.FirebaseAuth(BASE_URL)
+
+    let pageCfg = {
+        baseUrl: BASE_URL,
+        $mapEl: $("#map")
+    };
+    var mapsPage = new KAS.MapsPage(pageCfg, globalNotifier, firebaseSrvc);
+
+    $(document).ready(function() {
+        mapsPage.init()
+    })
+
+    function initMap() {
+
+        globalNotifier.show({
+            txt: 'Checking login status...',
+            icon: 'refresh',
+            spin: true
+        })
+
+        firebaseAuth.checkLogin()
+            .then((user) => {
+            mapsPage.loggedInUser = user
+        if (!firebaseAuth.isPendingRedirect()) {
+            _.each(document.getElementsByTagName("main"), (it) => it.classList.remove('d-none'))
+            mapsPage.initMap()
+        }
+    })
+    }
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDO-egoe_ks3dE5sSAOmyP4CQir9pgFCag&callback=initMap"></script>
+{% endblock %}
+
+

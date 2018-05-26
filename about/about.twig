@@ -1,0 +1,46 @@
+{% set menu = 'about' %}
+
+{% extends "_layout/master.twig" %}
+
+
+{% block title %}About -{% endblock %}
+{% block content %}
+    <div class="starter-template" style="text-align: left;">
+        <h1 class="display-4">About Me</h1>
+        <p class="lead">About Myself and the Project</p>
+        <hr class="my-4">
+        <p>
+            This application was created as a Twenty Time Project. The idea for a Twenty Time Project originated in the company M3, and was later further
+            developed by Google. The concept was to give workers of the company 20% of their work time to pursue their own personal interests. The Twenty
+            Time Project has given us post-it notes, double sided tape, and all of the Google applications like Google Docs and Google Slides.
+            <br><br>
+            My name is Kergan Sanderson, and I was assigned to do a Twenty Time Project as part of my Eight Grade English Language Arts class. Given the option
+            to do whatever I wanted, I decided that I wanted to make a difference in my community. Lately, I had noticed an abundace of litter in urban areas. I also
+            had been wanting to develop programming skills for a while, and thought about ways that I could combine those two interests. This website and the movement
+            that it supports is my Twenty Time Project.
+            <br><br>
+            The website that I ended up creating was developed using parts of <a href="https://maps.google.com" target="_blank">Google Maps</a> and
+            <a href="https://getbootstrap.com/" target="_blank">Bootstrap 4</a>, an open source program that other programers can use for pieces of their code. My website uses
+            Google Maps to create a map of the areas of trash around the communities of the world. Using the application, a user can see areas where trash may need to be picked
+            up, may need to be picked up soon, or areas that are clean and have no current litter.
+        </p>
+    </div>
+{% endblock %}
+{% block js %}
+
+    <script>
+    "use strict";
+    let BASE_URL = window.location.href
+    let firebaseSrvc = new KAS.FirebaseService()
+    let firebaseAuth = new KAS.FirebaseAuth(BASE_URL)
+    $(document).ready(function () {
+        firebaseAuth.checkLogin().then((resp) => {
+            if (!firebaseAuth.isPendingRedirect()) {
+                _.each(document.getElementsByTagName("main"), (it) => it.classList.remove('d-none'))
+            }
+        })
+    })
+    </script>
+
+{% endblock %}
+

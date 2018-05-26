@@ -1,0 +1,34 @@
+{% extends "_layout/master.twig" %}
+{% block content %}
+<div class="starter-template">
+    <div class="jumbotron">
+        <h1 class="display-4">Cleanup Grid</h1>
+        <p class="lead">
+            A Cleanup Application made using Google Maps
+        </p>
+        <hr class="my-4">
+        <p>
+            Take part with others in your community to keep our planet clean!
+        </p>
+        <a type="button" class="btn btn-success" href="https://cleanup.virtualgrid.com/maps/">To the Map</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+    <script>
+    "use strict";
+    let BASE_URL = window.location.href
+    let firebaseSrvc = new KAS.FirebaseService()
+    let firebaseAuth = new KAS.FirebaseAuth(BASE_URL)
+    $(document).ready(function () {
+        firebaseAuth.checkLogin().then((resp) => {
+            if (!firebaseAuth.isPendingRedirect()) {
+                _.each(document.getElementsByTagName("main"), (it) => it.classList.remove('d-none'))
+            }
+        })
+    })
+    </script>
+
+{% endblock %}

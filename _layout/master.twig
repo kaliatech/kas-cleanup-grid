@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+
+{% set menu = menu|default('home') %}
+{% set ctxPath = '' %}
+{% set containerClass = containerClass|default('container') %}
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.css" />
+
+    <link rel="stylesheet" href="{{ctxPath}}/static/css/global.css">
+
+    <title>{% block title %}{% endblock %}Cleanup Grid</title>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="{{  ctxPath }}">Cleanup Grid</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if menu == "home"%} active{% endif %}">
+                <a class="nav-link" href="{{ctxPath}}/">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item{% if menu == "map"%} active{% endif %}">
+                <a class="nav-link" href="{{ctxPath}}/map">Maps</a>
+            </li>
+            <li class="nav-item{% if menu == "about"%} active{% endif %}">
+                <a class="nav-link" href="{{ctxPath}}/about">About</a>
+            </li>
+        </ul>
+        <ul class="navbar-nav auth-signedin">
+            <li class="nav-item" style="padding: 0 1em; color: rgba(255,255,255, 0.5)">
+                <span class="auth-signedin-name"></span>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <div class='auth-checking text-white'>
+                ...
+            </div>
+            <div class='auth-signedin text-white'>
+                <button type="button" class="btn btn-outline-success my-2 my-sm-0 btn-signout" data-toggle="modal">Sign Out</button>
+            </div>
+            <div class='auth-signedout'>
+                <button type="button" class="btn btn-outline-success my-2 my-sm-0 btn-signin" data-toggle="modal" data-target="#authModal">Sign In</button>
+            </div>
+        </form>
+    </div>
+</nav>
+
+<main role="main" class="{{containerClass}} d-none">
+    {% block content %}{% endblock %}
+
+    <div id="authModal" class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign In</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="firebaseui-auth-container"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% block footer %}{% endblock %}
+
+<!-- JavaScript for bootstrap -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.5/lodash.min.js"></script>
+
+<!-- firebase -->
+<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase.js"></script>
+<script src="https://www.gstatic.com/firebasejs/4.11.0/firebase-firestore.js"></script>
+<script src="https://cdn.firebase.com/libs/firebaseui/2.6.3/firebaseui.js"></script>
+
+
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-app.js"></script>-->
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-auth.js"></script>-->
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-database.js"></script>-->
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-firestore.js"></script>-->
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-messaging.js"></script>-->
+<!--<script src="https://www.gstatic.com/firebasejs/4.10.1/firebase-storage.js"></script>-->
+
+<script src="{{ctxPath}}static/javascript/Notifier.js"></script>
+<script src="{{ctxPath}}static/javascript/FirebaseService.js"></script>
+<script src="{{ctxPath}}static/javascript/FirebaseAuth.js"></script>
+<script src="{{ctxPath}}static/javascript/MapDataService.js"></script>
+<script src="{{ctxPath}}static/javascript/MapsPage.js"></script>
+
+{% block js %}{% endblock %}
+
+</body>
+
+</html>
