@@ -18,5 +18,10 @@
         // Initialize Cloud Firestore through Firebase
         this.db = firebase.firestore();
     }
+    
+    KAS.FirebaseService.prototype.getCurrentUser = function () {
+      var user = firebase.auth().currentUser;
+      return user;
+    }
 
 }(window.KAS = window.KAS || {}, window.navigator, firebase));

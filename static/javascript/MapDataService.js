@@ -152,7 +152,11 @@
 
   KAS.MapDataService.prototype.onClick = function(lat, lon) {
     //console.log('onClick', lat, lon)
-
+    if (!this.firebaseSrvc.getCurrentUser()) {
+      this.notifier.show({ txt: 'Sign in before updating the map' })
+      return
+    }
+    
     if (!this.currMode) {
       this.notifier.show({ txt: 'Select "Clean" or "Trash"' })
       return
