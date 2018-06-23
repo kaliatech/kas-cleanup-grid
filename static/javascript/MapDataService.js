@@ -19,7 +19,7 @@
     this.squares = [] // polygons on google map
 
     this.cleanBtn.addEventListener('click', (evt) => {
-      if (this.currMode == 'clean') {
+      if (this.currMode === 'clean') {
         return
       }
 
@@ -34,11 +34,12 @@
 
       this.currMode = 'clean'
       this.notifier.hide()
+      this.saveMode()
     })
 
 
     this.trashBtn.addEventListener('click', (evt) => {
-      if (this.currMode == 'trash') {
+      if (this.currMode === 'trash') {
         return
       }
 
@@ -53,10 +54,11 @@
 
       this.currMode = 'trash'
       this.notifier.hide()
+      this.saveMode()
     })
 
     this.clearBtn.addEventListener('click', (evt) => {
-      if (this.currMode == 'clear') {
+      if (this.currMode === 'clear') {
         return
       }
 
@@ -71,7 +73,20 @@
 
       this.currMode = 'clear'
       this.notifier.hide()
+      this.saveMode()
     })
+  }
+
+  KAS.MapDataService.prototype.saveMode = function () {
+    if (typeof(Storage) !== "undefined") {
+      localStorage.setItem("currMode", this.currMode);
+    }
+  }
+
+  KAS.MapDataService.prototype.getSavedMode = function () {
+    if (typeof(Storage) !== "undefined") {
+      return localStorage.getItem('currMode')
+    }
   }
 
   KAS.MapDataService.prototype.init = function (map, currentGridSize, defaultLat, defaultLon) {
@@ -79,6 +94,22 @@
     this.currentGridSize = currentGridSize
     this.defaultLat = defaultLat
     this.defaultLon = defaultLon
+
+    const savedMode = this.getSavedMode()
+    let clickEvent = new MouseEvent("click", {
+      "view": window,
+      "bubbles": true,
+      "cancelable": false
+    })
+    if (savedMode === 'clean') {
+      this.cleanBtn.dispatchEvent(clickEvent)
+    }
+    else if (savedMode === 'trash') {
+      this.trashBtn.dispatchEvent(clickEvent)
+    }
+    else if (savedMode === 'clear') {
+      this.clearBtn.dispatchEvent(clickEvent)
+    }
 
     this.db = firebase.firestore()
 
