@@ -2,10 +2,10 @@
 /* global jQuery */
 /* global _ */
 
-(function(KAS, $, navigator, firebase) {
+(function (KAS, $, navigator, firebase) {
   "use strict";
 
-  KAS.MapDataService = function(notifier, firebaseSrvc, mapEl) {
+  KAS.MapDataService = function (notifier, firebaseSrvc, mapEl) {
     this.notifier = notifier
     this.firebaseSrvc = firebaseSrvc
     this.mapEl = mapEl
@@ -15,7 +15,8 @@
     this.clearBtn = document.getElementsByClassName('clear-btn')[0]
     this.currMode = null
 
-    this.tiles = []
+    this.tiles = {} // db
+    this.squares = [] // polygons on google map
 
     this.cleanBtn.addEventListener('click', (evt) => {
       if (this.currMode == 'clean') {
@@ -73,11 +74,11 @@
     })
   }
 
-  KAS.MapDataService.prototype.init = function(map, currentGridSize, defaultLat, defaultLon) {
+  KAS.MapDataService.prototype.init = function (map, currentGridSize, defaultLat, defaultLon) {
     this.map = map
     this.currentGridSize = currentGridSize
     this.defaultLat = defaultLat
-    this.defaultLon = this.defaultLon
+    this.defaultLon = defaultLon
 
     this.db = firebase.firestore()
 
@@ -85,40 +86,74 @@
     this.tileCollections = this.db.collection('tile-clicks')
 
     this.tileCollections.onSnapshot((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        const tile = doc.data()
 
-        //TODO: Only draw tiles which are new or changed.
-        const existingTile = this.getExistingTile(tile.lat, tile.lon)
-        if (!existingTile) {
-          this.tiles.push(tile)
-          this.drawSquare(tile.lat, tile.lon, tile.mode)
-        }
-        else {
-          //TODO: Clearand redraw only if changed
-          if (tile.code !== existingTile.mode) {
-            //TODO: how to clear?
-            //this.drawSquare(tile.lat, tile.lon, tile.mode)
+      querySnapshot.docChanges.forEach((change) => {
+
+        const data = change.doc.data()
+        const tileKey = this.toFixed(data.lat, 5) + '-' + this.toFixed(data.lon, 5)
+
+        if (change.type === "added") {
+          const tile = change.doc.data()
+          this.tiles[tileKey] = {
+            'dbDoc': change.doc,
+            'dbData': change.doc.data(),
+            'drawnPoly': this.drawSquare(tile.lat, tile.lon, tile.mode)
           }
         }
-
-
+        else if (change.type === "modified") {
+          const tileToModify = this.tiles[tileKey]
+          tileToModify.dbDoc = change.doc
+          tileToModify.dbData = change.doc.data()
+          google.maps.event.clearListeners(tileToModify.drawnPoly)
+          tileToModify.drawnPoly.setMap(null)
+          tileToModify.drawnPoly = this.drawSquare(tileToModify.dbData.lat, tileToModify.dbData.lon, tileToModify.dbData.mode)
+        }
+        else if (change.type === "removed") {
+          const tileToDelete = this.tiles[tileKey]
+          if (tileToDelete) {
+            google.maps.event.clearListeners(tileToDelete.drawnPoly)
+            tileToDelete.drawnPoly.setMap(null)
+            delete this.tiles[tileKey]
+          }
+        }
       });
+
+
+      // querySnapshot.forEach((doc) => {
+      //   const tile = doc.data()
+      //
+      //   const existingTile = this.getExistingTile(tile.lat, tile.lon)
+      //   if (!existingTile) {
+      //     this.tiles.push(tile)
+      //     this.drawSquare(tile.lat, tile.lon, tile.mode)
+      //   }
+      //   else {
+      //     // Changing existing tile
+      //     //TODO:
+      //     if (tile.code !== existingTile.mode) {
+      //       // this.clearSquare(doc.ref)
+      //       // this.
+      //     }
+      //   }
+      //
+      //
+      // });
       //console.log('Current tiles:', tiles)
     });
   }
+  KAS.MapDataService.prototype.clearSquare = function (tileDoc) {
+    // Clear from firebase db
+    console.log('delete tile', tileDoc)
+    tileDoc.delete()
+  }
 
-  KAS.MapDataService.prototype.drawSquare = function(lat, lon, mode) {
+  KAS.MapDataService.prototype.drawSquare = function (lat, lon, mode) {
 
     const tileCoords = this.getTileCoords(lat, lon)
     const topLat = tileCoords.topLat
     const rightLon = tileCoords.rightLon
     const bottomLat = tileCoords.bottomLat
     const leftLon = tileCoords.leftLon
-
-    if (!mode) {
-      mode = 'trash'
-    }
 
     let fillColor = '#CCCCCC'
     let strokeColor = '#CCCCCC'
@@ -132,7 +167,7 @@
     }
 
     let offset = this.currentGridSize * .075
-    new google.maps.Polygon({
+    let square = new google.maps.Polygon({
       paths: [
         new google.maps.LatLng(topLat - offset, rightLon - offset),
         new google.maps.LatLng(bottomLat + offset, rightLon - offset),
@@ -147,68 +182,98 @@
       strokeOpacity: .5,
       strokeWeight: 2
     })
+    square.addListener('click', (evt) => {
+      //if (this.currMode === 'clear') {
+      this.onClick(evt.latLng.lat(), evt.latLng.lng())
+      // const existingTile = this.getExistingTile(lat, lon)
+      // console.log('delete', existingTile)
+      // existingTile.delete()
+      // square.setMap(null)
+      //}
+    })
+    return square
   }
 
 
-  KAS.MapDataService.prototype.onClick = function(lat, lon) {
+  KAS.MapDataService.prototype.onClick = function (clickLat, clickLon) {
     //console.log('onClick', lat, lon)
     if (!this.firebaseSrvc.getCurrentUser()) {
-      this.notifier.show({ txt: 'Sign in before updating the map' })
+      this.notifier.show({txt: 'Sign in before updating the map'})
       return
     }
-    
+
     if (!this.currMode) {
-      this.notifier.show({ txt: 'Select "Clean" or "Trash"' })
+      this.notifier.show({txt: 'Select "Clean" or "Trash"'})
       return
     }
 
-    const existingTile = this.getExistingTile(lat, lon)
-    if (existingTile) {
-      console.log('todo: tile exists', existingTile)
-    }
+    const tileCoords = this.getTileCoords(clickLat, clickLon)
+    const topLat = tileCoords.topLat
+    const leftLon = tileCoords.leftLon
+    const tileKey = this.toFixed(topLat, 5) + '-' + this.toFixed(leftLon, 5)
+    const existingTile = this.tiles[tileKey]
 
-    this.firebaseSrvc.db.collection("tile-clicks").add({
-        lat: lat,
-        lon: lon,
-        location: new firebase.firestore.GeoPoint(lat, lon),
+    if (existingTile) {
+      if (this.currMode === 'clear') {
+        existingTile.dbDoc.ref.delete()
+      }
+      else if (this.currMode !== existingTile.dbData.mode) {
+        existingTile.dbDoc.ref.update({mode: this.currMode})
+      }
+    }
+    else if (this.currMode !== 'clear') {
+      this.firebaseSrvc.db.collection("tile-clicks").add({
+        lat: topLat,
+        lon: leftLon,
+        location: new firebase.firestore.GeoPoint(topLat, leftLon),
         mode: this.currMode,
         ts: new Date()
       })
-      .then(function(docRef) {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch(function(error) {
-        console.error("Error adding document: ", error);
-      });
-  }
-
-  KAS.MapDataService.prototype.getTileCoords = function(lat, lon) {
-    const topLat = Math.round((lat + (this.currentGridSize / 2)) / this.currentGridSize) * this.currentGridSize
-    const rightLon = Math.ceil(lon / this.currentGridSize) * this.currentGridSize;
-
-    const bottomLat = topLat - this.currentGridSize
-    const leftLon = rightLon - this.currentGridSize
-    return { topLat, rightLon, bottomLat, leftLon }
-  }
-
-  KAS.MapDataService.prototype.getExistingTile = function(lat, lon) {
-    for (let i = 0; i < this.tiles.length; i++) {
-      let tile = this.tiles[i]
-      if (this.tileContains(tile, lat, lon)) {
-        return tile
-      }
+        .then(function (docRef) {
+          // console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function (error) {
+          console.error("Error adding document: ", error);
+        });
+    }
+    else {
+      // console.log('click', clickLat, clickLon)
+      // console.log('rounded', topLat, leftLon)
     }
   }
 
-  KAS.MapDataService.prototype.tileContains = function(tile, lat, lon) {
-
-    //TODO: This doesn't handle border cases crossing merdians, polar, or equator
-    const tileCoords = this.getTileCoords(tile.lat, tile.lon)
-
-    let sameLon = (lon >= tileCoords.leftLon && lon <= tileCoords.rightLon) ? true : false
-    let sameLat = (lat >= tileCoords.bottomLat && lat <= tileCoords.topLat) ? true : false
-
-    return (sameLon && sameLat)
+  // Browser impl of toFixed is not reliable: https://stackoverflow.com/questions/10015027/javascript-tofixed-not-rounding
+  KAS.MapDataService.prototype.toFixed = function (num, precision) {
+    return (+(Math.round(+(num + 'e' + precision)) + 'e' + -precision)).toFixed(precision);
   }
+
+  KAS.MapDataService.prototype.getTileCoords = function (lat, lon) {
+    lat = this.toFixed(lat, 5)
+    lon = this.toFixed(lon, 5)
+    const topLat = Math.ceil((lat / this.currentGridSize)) * this.currentGridSize
+    const leftLon = Math.floor((lon / this.currentGridSize)) * this.currentGridSize
+
+    const bottomLat = topLat - this.currentGridSize
+    const rightLon = leftLon + this.currentGridSize
+    return {topLat, rightLon, bottomLat, leftLon}
+  }
+
+  // No longer needed when storing rounded tile coords only:
+  /*
+    KAS.MapDataService.prototype.getExistingTile = function (lat, lon) {
+      Object.entries(this.tiles).forEach(([tileKey, tile]) => {
+        if (this.tileContains(tile.dbData, lat, lon)) {
+          return tile
+        }
+      })
+    }
+
+    KAS.MapDataService.prototype.tileContains = function (tileDbData, lat, lon) {
+      const tileCoords = this.getTileCoords(tileDbData.lat, tileDbData.lon)
+      let sameLon = (lon >= tileCoords.leftLon && lon <= tileCoords.rightLon) ? true : false
+      let sameLat = (lat >= tileCoords.bottomLat && lat <= tileCoords.topLat) ? true : false
+      return (sameLon && sameLat)
+    }
+  */
 
 }(window.KAS = window.KAS || {}, jQuery, window.navigator, window.firebase));

@@ -2,16 +2,16 @@
 /* global jQuery */
 /* global _ */
 
-(function(KAS, $, navigator) {
+(function (KAS, $, navigator) {
   "use strict";
 
 
-  KAS.MapsPage = function(pageCfg, notifier, firebaseSrvc) {
+  KAS.MapsPage = function (pageCfg, notifier, firebaseSrvc) {
     this.notifier = notifier
     this.firebaseSrvc = firebaseSrvc
     this.mapEl = document.getElementById('map')
 
-    this.tryToUseGeoLocation = false
+    this.tryToUseGeoLocation = true
 
     this.defaultLat = 35.6605
     //this.defaultLat = 35.661111
@@ -26,16 +26,16 @@
     this.latGridLines = [];
     this.lonGridLines = [];
 
-
     this.mapDataService = new KAS.MapDataService(notifier, firebaseSrvc, this.mapEl)
   }
 
-  KAS.MapsPage.prototype.init = function() {}
+  KAS.MapsPage.prototype.init = function () {
+  }
 
-  KAS.MapsPage.prototype.initMap = function() {
+  KAS.MapsPage.prototype.initMap = function () {
     if (this.tryToUseGeoLocation) {
       if (!("geolocation" in navigator)) {
-        this.notifier.show({ icon: 'error', txt: 'This browser does not support geolocation api.', autoClose: 2000 })
+        this.notifier.show({icon: 'error', txt: 'This browser does not support geolocation api.', autoClose: 2000})
         setTimeout(() => {
           this.displayBaseMap
         }, 2000)
@@ -61,7 +61,7 @@
             this.displayBaseMap()
           },
           (error) => {
-            this.notifier.show({ icon: 'error', txt: 'Unable to get current geolocation information.', autoClose: 2000 })
+            this.notifier.show({icon: 'error', txt: 'Unable to get current geolocation information.', autoClose: 2000})
             console.log('Unable to get current geolocation information.', error)
             this.displayBaseMap()
           },
@@ -73,7 +73,7 @@
     }
   }
 
-  KAS.MapsPage.prototype.displayBaseMap = function() {
+  KAS.MapsPage.prototype.displayBaseMap = function () {
 
     this.notifier.show({
       txt: 'Loading map',
@@ -93,7 +93,6 @@
     })
 
 
-
     // Not sure if debouncing is really needed
     let debouncedDrawGridLines = _.debounce(() => this.drawGridLines(), 100)
     google.maps.event.addListener(this.map, 'bounds_changed', () => {
@@ -111,16 +110,16 @@
     this.mapDataService.init(this.map, this.currentGridSize, this.defaultLat, this.defaultLon);
   }
 
-  KAS.MapsPage.prototype.drawGridLines = function() {
+  KAS.MapsPage.prototype.drawGridLines = function () {
     this.currBounds = this.map.getBounds();
 
     let currZoom = this.map.getZoom()
-    if (currZoom < 19) {
-      this.currentGridSize = this.defaultGridSize * 2
-    }
-    else {
-      this.currentGridSize = this.defaultGridSize
-    }
+    // if (currZoom < 19) {
+    //   this.currentGridSize = this.defaultGridSize * 2
+    // }
+    // else {
+    this.currentGridSize = this.defaultGridSize
+    // }
 
 
     // remove any existing lines from the map
@@ -136,7 +135,7 @@
     // don't add the lines if the boxes are too small to be useful
     if (this.map.getZoom() <= 17) return;
 
-    var north = this.currBounds.getNorthEast().lat();
+    var north = this.currBounds.getNorthEast().lat().toFixed(5);
     var east = this.currBounds.getNorthEast().lng().toFixed(5);
     var south = this.currBounds.getSouthWest().lat().toFixed(5);
     var west = this.currBounds.getSouthWest().lng().toFixed(5);

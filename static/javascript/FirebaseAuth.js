@@ -35,15 +35,15 @@
 
     // Initialize the FirebaseUI Widget using Firebase.
     this.ui = new firebaseui.auth.AuthUI(firebase.auth());
-    
+
     this.pendingRedirect = this.ui.isPendingRedirect()
-    console.log('isPendingRedirect', this.pendingRedirect)
+    // console.log('isPendingRedirect', this.pendingRedirect)
 
     if (this.ui.isPendingRedirect()) {
       this.ui.start('#firebaseui-auth-container', this.uiConfig)
     }
 
-    //console.log('currentUser', firebase.auth().currentUser)
+    // console.log('currentUser', firebase.auth().currentUser)
 
   }
 
@@ -52,7 +52,6 @@
   }
 
   KAS.FirebaseAuth.prototype.checkLogin = function() {
-    console.log('checkLogin')
     return new Promise((resolve, reject) => {
       resolve(true);
     })
@@ -72,8 +71,8 @@
   }
 
   KAS.FirebaseAuth.prototype._onAuthStateChanged = function(user) {
-    console.log('_onAuthStateChanged', user)
-    console.log('pendingRedirect', this.pendingRedirect)
+    // console.log('_onAuthStateChanged', user)
+    // console.log('pendingRedirect', this.pendingRedirect)
     if (user) {
       // User is signed in.
       var displayName = user.displayName;
@@ -96,7 +95,7 @@
           //   accessToken: accessToken,
           //   providerData: providerData
           // }, null, '  ');
-          console.log('user:', displayName)
+          // console.log('user:', displayName)
 
           Array.prototype.forEach.call(this.authInEls, (it) => it.style.display = 'block')
           Array.prototype.forEach.call(this.authOutEls, (it) => it.style.display = 'none')
